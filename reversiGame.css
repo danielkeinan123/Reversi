@@ -1,0 +1,91 @@
+html{
+	height: 100%;
+	width: 100%;
+}
+body {
+	background-color: #232323;
+	margin: 0;
+	height: 100%;
+	width: 100%;
+	font-family: "Montserrat", "Avenir";
+}
+
+.gameTable{
+	min-width: 400px;
+	min-height: 400px;
+	margin: 2px auto;
+	border: 2px solid #232323;
+}
+.row{
+	min-width: 400px;
+	min-height: 40px;
+}
+.cell{
+	float: left;
+	margin: 2px;
+	border-radius: 15%;
+	transition: background 0.4s;
+	background-color: seagreen;
+}
+
+.circle{
+	border-radius: 50%;
+	width: 30px;
+	height: 30px;
+}
+.blackCircle{
+	background-color: black;
+}
+.whiteCircle{
+	background-color: blanchedalmond;
+}
+
+#theGame{
+	max-width: 600px;
+	max-height: 600px;
+	margin: 20px auto;
+}
+
+h1{
+	color: white;
+	text-align: center;
+	margin: 0;
+	font-weight: normal;
+	text-transform: uppercase;
+	background-color: seagreen;
+	line-height: 1.1;
+	padding: 20px 0;
+}
+
+#stripe{
+	background: white;
+	height: 30px;
+	text-align: center;
+	color: black;
+
+}
+.selected{
+	background-color: rgb(100, 170,220);
+	color: white;
+}
+
+button {
+	border: none;
+	background: none;
+	text-transform: uppercase;
+	height: 100%;
+	color: seagreen;
+	font-weight: 700;
+	letter-spacing: 1px;
+	font-size: inherit;
+	transition: all 0.4s;
+}
+#message{
+	display: inline-block;
+	width: 20%;
+}
+
+button:hover{
+	color: white;
+	background-color: seagreen;
+}
