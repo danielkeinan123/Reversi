@@ -46,15 +46,13 @@ body {
 }
 
 .whiteScore{
-    background-color: white;
-    color: black;
+    color: white;
     width: 40px;
     height: 40px;
-    border-color: black;
+    border-color: white;
 }
 
-.whiteScore{
-    background-color: black;
+.BlackScore{
     color: white;
     width: 40px;
     height: 40px;
@@ -99,11 +97,18 @@ h1{
 }
 
 #stripe{
+	display: flex;
+	justify-content: center;
 	background: white;
 	height: 30px;
 	text-align: center;
 	color: black;
 
+}
+#Scores{
+	height: 30px;
+	text-align: center;
+	color: black;
 }
 .selected{
 	background-color: rgb(100, 170,220);

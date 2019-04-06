@@ -1,16 +1,23 @@
 
 
-var gameTable = document.querySelector(".gameTable");
-var newGame = document.querySelector("#new");
-const TABLE_SIZE = 10;
-var blackTurn = true;
-var cells = [];
+let gameTable = document.querySelector(".gameTable");
+let newGame = document.querySelector("#new");
+let forfit = document.querySelector("#forfit");
 
-var statistics ={
+let gameStarted = false;
+
+const TABLE_SIZE = 10;
+let blackTurn = true;
+let cells = [];
+let d = new Date();
+
+let statistics ={
 	howManyTurns : 0,
+	startTime    : d.getTime(),
 	timePassed   : 0,
 	avgTimeForPlayerMove : 0,
-	numberOfTimesPlayerReachedTwoCircles : 0,
+	numberOfTimesBlackReachedTwoCircles : 1,
+	numberOfTimesWhiteReachedTwoCircles : 1,
 	whiteScore : 2,
 	blackScore : 2
 };
@@ -55,12 +62,12 @@ for (var i = 0; i < TABLE_SIZE; i++) {
 setValidCells();
 function initCellDiv(cell,i,j){
 	var circleDiv = document.createElement("DIV");
-	if((i == 4 & j == 4) | (i == 5 & j == 5)){
+	if((i === 4 & j === 4) | (i === 5 & j === 5)){
 		circleDiv.classList.add("circle");
 		cell.appendChild(circleDiv);
 		circleDiv.classList.add("blackCircle");
 	}
-	else if((i == 5 & j == 4) | (i == 4 & j == 5)){
+	else if((i === 5 & j === 4) | (i === 4 & j === 5)){
 		circleDiv.classList.add("circle");
 		cell.appendChild(circleDiv);
 		circleDiv.classList.add("whiteCircle");
@@ -69,39 +76,39 @@ function initCellDiv(cell,i,j){
 
 function nearAFullCell(i,j){
 	var ans1 = false;
-	if(i == 0 && j == 0){
+	if(i === 0 && j === 0){
 		ans1 = cells[i][j+1].hasChildNodes() ||
 		cells[i+1][j].hasChildNodes() ||  cells[i+1][j+1].hasChildNodes();
 	}
-	else if(i == 0 && j == 9){
+	else if(i === 0 && j === 9){
 		ans1 =  cells[i][j-1].hasChildNodes() || cells[i+1][j-1].hasChildNodes() ||
 		cells[i+1][j].hasChildNodes();
 	}
-	else if(i == 9 && j == 9){
+	else if(i === 9 && j === 9){
 		ans1 = cells[i-1][j-1].hasChildNodes() ||  cells[i-1][j].hasChildNodes() ||
 			cells[i][j-1].hasChildNodes();
 	}
-	else if(i == 9 && j == 0){
+	else if(i === 9 && j === 0){
 		ans1 = cells[i-1][j].hasChildNodes() ||
 		cells[i-1][j+1].hasChildNodes() || cells[i][j+1].hasChildNodes();
 	}
-	else if(i == 0){
+	else if(i === 0){
 		ans1 = cells[i][j-1].hasChildNodes() ||
 			 cells[i][j+1].hasChildNodes() ||  cells[i+1][j-1].hasChildNodes() ||
 			 cells[i+1][j].hasChildNodes() ||  cells[i+1][j-1].hasChildNodes();
 	}
-	else if(i == 9){
+	else if(i === 9){
 		ans1 = cells[i-1][j-1].hasChildNodes() ||  cells[i-1][j].hasChildNodes() ||
 		cells[i-1][j+1].hasChildNodes() ||  cells[i][j-1].hasChildNodes() ||
 		cells[i][j+1].hasChildNodes();
 	}
-	else if (j == 0){
+	else if (j === 0){
 		ans1 = cells[i-1][j].hasChildNodes() ||
 			 cells[i-1][j+1].hasChildNodes() ||
 			 cells[i][j+1].hasChildNodes() || cells[i+1][j+1].hasChildNodes();
 			 cells[i+1][j].hasChildNodes();
 	}
-	else if(j == 9){
+	else if(j === 9){
 		ans1 = cells[i-1][j-1].hasChildNodes() ||  cells[i-1][j].hasChildNodes() ||
 			cells[i][j-1].hasChildNodes() ||
 			cells[i+1][j-1].hasChildNodes() ||
@@ -121,7 +128,7 @@ function setValidCells(){
 	for(var i = 0; i < TABLE_SIZE; i++) {
 		for(var j = 0; j < TABLE_SIZE; j++){
 			if(!(cells[i][j].hasChildNodes())){
-				if(nearAFullCell(i,j) == true){
+				if(nearAFullCell(i,j) === true){
 					cells[i][j].classList.add("validCell");
 					cells[i][j].classList.remove("invalidCell");
 				}
@@ -240,10 +247,10 @@ function findCellsToChangeInVertical(comper, j,to , add ,i,newColor,oldColor){
 
 function clickCell(cell){
 	if(cell.classList.contains("validCell")){
+
 		var newDiv = document.createElement("DIV");
 		newDiv.classList.add("circle");
 		cell.appendChild(newDiv);
-		var colorClass = "";
 		if (blackTurn){
 			newDiv.classList.add("blackCircle");
 			newColorClass = "blackCircle";
@@ -257,10 +264,10 @@ function clickCell(cell){
 		cell.classList.remove("validCell");
 		setValidCells();
 		setCellsToNewColor(cell, newColorClass, oldColorClass);
-		updateScoresCount();
-		let ans = isThereAWinner();
-		if(ans==whoWon.Black){
-			window.alert("Black Won");
+		updateStatistics();
+		let winner = isThereAWinner();
+		if(winner!== whoWon.NoOne){
+			endGame(winner);
 		}
 		changeTurn()
 
@@ -279,9 +286,6 @@ function changeTurn() {
 	}
 
 	blackTurn = !blackTurn;
-
-
-
 }
 
 
@@ -310,7 +314,7 @@ function updateScoresCount() {
 
 }
 function isThereAWinner() {
-	var isFull = (statistics.whiteScore +statistics.blackScore  ==  TABLE_SIZE*TABLE_SIZE);
+	var isFull = (statistics.whiteScore +statistics.blackScore  ===  TABLE_SIZE*TABLE_SIZE);
 	var ans;
 
 	if (isFull){
@@ -322,10 +326,10 @@ function isThereAWinner() {
 		}
 	}
 	else{
-		if (statistics.whiteScore ==0){
+		if (statistics.whiteScore ===0){
 			ans= whoWon.Black;
 		}
-		else if (statistics.blackScore ==0){
+		else if (statistics.blackScore ===0){
 			ans =  whoWon.White;
 		}
 		else{
@@ -336,9 +340,32 @@ function isThereAWinner() {
 	return ans;
 
 }
+function endGame(winner) {
+	statistics.timePassed = d.getTime() - statistics.startTime;
+	statistics.avgTimeForPlayerMove = statistics.timePassed/statistics.howManyTurns;
+	if(winner === whoWon.Black)
+		window.alert("GAME HAS ENDED, Congratulations Black");
+	else
+		window.alert("GAME HAS ENDED, Congratulations White");
+}
 
+function updatePlayersTwoTimes(){
+	if (statistics.whiteScore === 2){
+		statistics.numberOfTimesWhiteReachedTwoCircles++;
+	}
+	if (statistics.blackScore === 2){
+		statistics.numberOfTimesBlackReachedTwoCircles++;
+	}
+}
+
+function updateStatistics(){
+	updateScoresCount();
+	statistics.howManyTurns ++;
+	updatePlayersTwoTimes();
+}
 function createNewGame(){
 	var cellChild;
+	statistics.howManyTurns = 0;
 	for (var i = 0; i < TABLE_SIZE ; i++) {
 		for(var j = 0; j < TABLE_SIZE; j++){
 			cells[i][j].classList.remove("validCell");
@@ -351,9 +378,26 @@ function createNewGame(){
 		}
 	}
 	setValidCells();
+
+	gameStarted = true;
+}
+
+function surrender(){
+	if(gameStarted){
+		if(blackTurn){
+			endGame(whoWon.White);
+		}
+		else {
+			endGame(whoWon.Black)
+		}
+	}
 }
 
 newGame.addEventListener("click",function(){
 	createNewGame();
+});
+
+forfit.addEventListener("click",function () {
+	surrender();
 });
 
