@@ -6,6 +6,21 @@ const TABLE_SIZE = 10;
 var blackTurn = true;
 var cells = [];
 
+var statistics ={
+	howManyTurns : 0,
+	timePassed   : 0,
+	avgTimeForPlayerMove : 0,
+	numberOfTimesPlayerReachedTwoCircles : 0,
+	whiteScore : 2,
+	blackScore : 2
+};
+
+const whoWon = {
+	NoOne : 0,
+	White : 1,
+	Black : 2
+};
+
 function min (a,b){
 	if(a>b){
 		return b;
@@ -83,7 +98,7 @@ function nearAFullCell(i,j){
 	else if (j == 0){
 		ans1 = cells[i-1][j].hasChildNodes() ||
 			 cells[i-1][j+1].hasChildNodes() ||
-			 cells[i][j+1].hasChildNodes() || cells[i+1][j+1].hasChildNodes()
+			 cells[i][j+1].hasChildNodes() || cells[i+1][j+1].hasChildNodes();
 			 cells[i+1][j].hasChildNodes();
 	}
 	else if(j == 9){
@@ -242,6 +257,11 @@ function clickCell(cell){
 		cell.classList.remove("validCell");
 		setValidCells();
 		setCellsToNewColor(cell, newColorClass, oldColorClass);
+		updateScoresCount();
+		let ans = isThereAWinner();
+		if(ans==whoWon.Black){
+			window.alert("Black Won");
+		}
 		changeTurn()
 
 	}
@@ -261,6 +281,59 @@ function changeTurn() {
 	blackTurn = !blackTurn;
 
 
+
+}
+
+
+function updateScoresCount() {
+	var blackCounter =0, whiteCounter =0;
+	for(var i =0; i < TABLE_SIZE; i++) {
+		for (var j = 0; j < TABLE_SIZE; j++) {
+			if (cells[i][j].hasChildNodes()) {
+				if (cells[i][j].childNodes[0].classList.contains("blackCircle")) {
+
+					blackCounter++;
+					console.log("BlackCounter");
+				} else if (cells[i][j].childNodes[0].classList.contains("whiteCircle")) {
+					whiteCounter++;
+					console.log("WhiteCounter");
+				}
+			}
+		}
+	}
+
+	statistics.whiteScore = whiteCounter;
+	statistics.blackScore = blackCounter;
+
+	document.getElementById("blackPlayerScore").innerHTML = "Black Score:" + statistics.blackScore;
+	document.getElementById("whitePlayerScore").innerHTML = "White Score:" + statistics.whiteScore;
+
+}
+function isThereAWinner() {
+	var isFull = (statistics.whiteScore +statistics.blackScore  ==  TABLE_SIZE*TABLE_SIZE);
+	var ans;
+
+	if (isFull){
+		if (statistics.whiteScore > statistics.blackScore){
+			ans=  whoWon.White;
+		}
+		else{
+			ans = whoWon.Black;
+		}
+	}
+	else{
+		if (statistics.whiteScore ==0){
+			ans= whoWon.Black;
+		}
+		else if (statistics.blackScore ==0){
+			ans =  whoWon.White;
+		}
+		else{
+			ans =  whoWon.NoOne;
+		}
+	}
+
+	return ans;
 
 }
 

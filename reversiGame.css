@@ -45,6 +45,22 @@ body {
 	height: 40px;
 }
 
+.whiteScore{
+    background-color: white;
+    color: black;
+    width: 40px;
+    height: 40px;
+    border-color: black;
+}
+
+.whiteScore{
+    background-color: black;
+    color: white;
+    width: 40px;
+    height: 40px;
+    border-color: white;
+}
+
 .circle{
 	border-radius: 50%;
 	width: 30px;
