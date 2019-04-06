@@ -24,20 +24,31 @@ body {
 	float: left;
 	margin: 2px;
 	border-radius: 15%;
+	border: 1px seagreen solid;
 	transition: background 0.4s;
 	background-color: seagreen;
+	width: 30px;
+	height: 30px;
 }
 
 .circle{
 	border-radius: 50%;
 	width: 30px;
 	height: 30px;
+
 }
 .blackCircle{
 	background-color: black;
 }
 .whiteCircle{
 	background-color: blanchedalmond;
+}
+.validCell{
+	border:1px rgb(35, 175, 240) solid;
+}
+
+.invalidCell{
+	border:1px rgb(228, 90, 102) solid;
 }
 
 #theGame{
