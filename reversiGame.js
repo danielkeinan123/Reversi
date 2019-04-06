@@ -2,7 +2,7 @@
 
 var gameTable = document.querySelector(".gameTable");
 var newGame = document.querySelector("#new");
-var tableSize = 10;
+const TABLE_SIZE = 10;
 var blackTurn = true;
 var cells = [];
 
@@ -23,10 +23,10 @@ function max(a,b){
 	}
 }
 
-for (var i = 0; i < tableSize; i++) {
+for (var i = 0; i < TABLE_SIZE; i++) {
 		var row = gameTable.insertRow(i);
 		cells[i]= [];
-		for (var j = 0; j < tableSize; j++) {
+		for (var j = 0; j < TABLE_SIZE; j++) {
 			var col = row.insertCell(j);
 			col.classList.add("cell");
 			col.addEventListener("click", function(){
@@ -103,8 +103,8 @@ function nearAFullCell(i,j){
 }
 
 function setValidCells(){
-	for(var i = 0; i < tableSize; i++) {
-		for(var j = 0; j < tableSize; j++){
+	for(var i = 0; i < TABLE_SIZE; i++) {
+		for(var j = 0; j < TABLE_SIZE; j++){
 			if(!(cells[i][j].hasChildNodes())){
 				if(nearAFullCell(i,j) == true){
 					cells[i][j].classList.add("validCell");
@@ -131,17 +131,17 @@ function setCellsToNewColor(cell, newColor, oldColor){
 	function smaller(i,to){
 		return i < to;
 	}
-	findCellsToChangeInRow(bigger,tableSize-1, colIndex ,false,rowIndex,newColor,oldColor);
+	findCellsToChangeInRow(bigger,TABLE_SIZE-1, colIndex ,false,rowIndex,newColor,oldColor);
 	findCellsToChangeInRow(smaller,0, colIndex , true,rowIndex,newColor,oldColor);	
-	findCellsToChangeInColum(bigger, tableSize-1, rowIndex, false, colIndex, newColor, oldColor);
+	findCellsToChangeInColum(bigger, TABLE_SIZE-1, rowIndex, false, colIndex, newColor, oldColor);
 	findCellsToChangeInColum(smaller, 0, rowIndex, true, colIndex,newColor, oldColor);
 	//down vertical
 	i = max(0,rowIndex-colIndex);
 	j = max(0,colIndex-rowIndex);
 	to = colIndex;
 	findCellsToChangeInVertical(smaller, j, to, true, i, newColor, oldColor);
-	i = max(tableSize-1,(tableSize-1)-rowIndex);
-	j = min(tableSize-1,(tableSize-1)-colIndex);
+	i = max(TABLE_SIZE-1,(TABLE_SIZE-1)-rowIndex);
+	j = min(TABLE_SIZE-1,(TABLE_SIZE-1)-colIndex);
 	findCellsToChangeInVertical(bigger, j, to, false, i, newColor, oldColor);
 	//up verticl
 	//findCellsToChangeInVertical(comper, j, to, add, i, newColor, oldColor);
@@ -242,14 +242,32 @@ function clickCell(cell){
 		cell.classList.remove("validCell");
 		setValidCells();
 		setCellsToNewColor(cell, newColorClass, oldColorClass);
-		blackTurn = !blackTurn;
+		changeTurn()
+
 	}
+}
+
+function changeTurn() {
+	let playerTurn = document.getElementById("playerTurn");
+	if (blackTurn){
+		playerTurn.className = "whitePlayerTurn";
+		playerTurn.innerHTML = "white Player Turn";
+	}
+	else{
+		playerTurn.className = "blackPlayerTurn";
+		playerTurn.innerHTML = "Black Player Turn";
+	}
+
+	blackTurn = !blackTurn;
+
+
+
 }
 
 function createNewGame(){
 	var cellChild;
-	for (var i = 0; i < tableSize ; i++) {
-		for(var j = 0; j < tableSize; j++){
+	for (var i = 0; i < TABLE_SIZE ; i++) {
+		for(var j = 0; j < TABLE_SIZE; j++){
 			cells[i][j].classList.remove("validCell");
 			cells[i][j].classList.remove("invalidCell");
 			if(cells[i][j].hasChildNodes()){

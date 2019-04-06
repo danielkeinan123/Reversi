@@ -31,6 +31,20 @@ body {
 	height: 30px;
 }
 
+.blackPlayerTurn{
+	background-color: black;
+	color: white;
+	width: 40px;
+	height: 40px;
+}
+
+.whitePlayerTurn{
+	background-color: white;
+	color: black;
+	width: 40px;
+	height: 40px;
+}
+
 .circle{
 	border-radius: 50%;
 	width: 30px;
