@@ -1,9 +1,27 @@
 
+
 var gameTable = document.querySelector(".gameTable");
 var newGame = document.querySelector("#new");
 var tableSize = 10;
 var blackTurn = true;
 var cells = [];
+
+function min (a,b){
+	if(a>b){
+		return b;
+	}
+	else{
+		return a;
+	}
+}
+function max(a,b){
+	if(a>b){
+		return a;
+	}
+	else{
+		return b;
+	}
+}
 
 for (var i = 0; i < tableSize; i++) {
 		var row = gameTable.insertRow(i);
@@ -101,20 +119,130 @@ function setValidCells(){
 	}
 }
 
+
+function setCellsToNewColor(cell, newColor, oldColor){
+	setToColor = false;
+	foundMatch = false;
+	rowIndex = cell.parentElement.rowIndex;
+	colIndex = cell.cellIndex;
+	function bigger(i,to){
+		return i > to;
+	}
+	function smaller(i,to){
+		return i < to;
+	}
+	findCellsToChangeInRow(bigger,tableSize-1, colIndex ,false,rowIndex,newColor,oldColor);
+	findCellsToChangeInRow(smaller,0, colIndex , true,rowIndex,newColor,oldColor);	
+	findCellsToChangeInColum(bigger, tableSize-1, rowIndex, false, colIndex, newColor, oldColor);
+	findCellsToChangeInColum(smaller, 0, rowIndex, true, colIndex,newColor, oldColor);
+	//down vertical
+	i = max(0,rowIndex-colIndex);
+	j = max(0,colIndex-rowIndex);
+	to = colIndex;
+	findCellsToChangeInVertical(smaller, j, to, true, i, newColor, oldColor);
+	i = max(tableSize-1,(tableSize-1)-rowIndex);
+	j = min(tableSize-1,(tableSize-1)-colIndex);
+	findCellsToChangeInVertical(bigger, j, to, false, i, newColor, oldColor);
+	//up verticl
+	//findCellsToChangeInVertical(comper, j, to, add, i, newColor, oldColor);
+	//findCellsToChangeInVertical(comper, j, to, add, i, newColor, oldColor);
+
+}
+
+
+function findCellsToChangeInRow(comper, i,to , add ,rowIndex,newColor,oldColor){
+	var foundMatch = false;
+	var setToColor = false;
+	while(comper(i,to)){
+		if(cells[rowIndex][i].hasChildNodes()){
+			if (cells[rowIndex][i].childNodes[0].classList.contains(newColor) && !foundMatch){
+				setToColor = true;
+				foundMatch = true;
+			}
+			if(setToColor){
+				cells[rowIndex][i].childNodes[0].classList.add(newColor);
+				cells[rowIndex][i].childNodes[0].classList.remove(oldColor)
+			}
+		}
+		if(add){
+			i = i+1;
+		}
+		else{
+			i = i-1;
+		}
+	}
+}
+
+function findCellsToChangeInColum(comper, j,to , add ,colIndex,newColor,oldColor){
+	var foundMatch = false;
+	var setToColor = false;
+	while(comper(j,to)){
+		if(cells[j][colIndex].hasChildNodes()){
+			if (cells[j][colIndex].childNodes[0].classList.contains(newColor) && !foundMatch){
+				setToColor = true;
+				foundMatch = true;
+			}
+			if(setToColor){
+				cells[j][colIndex].childNodes[0].classList.add(newColor);
+				cells[j][colIndex].childNodes[0].classList.remove(oldColor)
+			}
+		}
+		if(add){
+			j = j+1;
+		}
+		else{
+			j = j-1;
+		}
+	}
+}
+
+function findCellsToChangeInVertical(comper, j,to , add ,i,newColor,oldColor){
+	var foundMatch = false;
+	var setToColor = false;
+	console.log("befor while "+j+" "+to);
+	while(comper(j,to)){
+		console.log("in while i="+i+" j="+j+" to="+to);
+		if(cells[i][j].hasChildNodes()){
+			if (cells[i][j].childNodes[0].classList.contains(newColor) && !foundMatch){
+				setToColor = true;
+				foundMatch = true;
+			}
+			if(setToColor){
+				cells[i][j].childNodes[0].classList.add(newColor);
+				cells[i][j].childNodes[0].classList.remove(oldColor)
+			}
+		}
+		if(add){
+			j = j+1;
+			i = i+1;
+		}
+		else{
+			j = j-1;
+			i = i-1;
+		}
+	}
+}
+
 function clickCell(cell){
 	if(cell.classList.contains("validCell")){
 		var newDiv = document.createElement("DIV");
 		newDiv.classList.add("circle");
 		cell.appendChild(newDiv);
+		var colorClass = "";
 		if (blackTurn){
 			newDiv.classList.add("blackCircle");
+			newColorClass = "blackCircle";
+			oldColorClass = "whiteCircle";
 		}
 		else{
 			newDiv.classList.add("whiteCircle");
+			newColorClass = "whiteCircle";
+			oldColorClass = "blackCircle";
 		}
-		blackTurn = !blackTurn;
 		cell.classList.remove("validCell");
 		setValidCells();
+		setCellsToNewColor(cell, newColorClass, oldColorClass);
+		blackTurn = !blackTurn;
 	}
 }
 
