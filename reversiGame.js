@@ -67,6 +67,8 @@ for (var i = 0; i < TABLE_SIZE; i++) {
 		}
 }
 setValidCells();
+initStatistics();
+
 function initCellDiv(cell,i,j){
 	var circleDiv = document.createElement("DIV");
 	if((i === 4 & j === 4) | (i === 5 & j === 5)){
@@ -311,14 +313,12 @@ function changeTurn() {
 	blackTurn = !blackTurn;
 }
 
-
 function updateScoresCount() {
 	var blackCounter =0, whiteCounter =0;
 	for(var i =0; i < TABLE_SIZE; i++) {
 		for (var j = 0; j < TABLE_SIZE; j++) {
 			if (cells[i][j].hasChildNodes()) {
 				if (cells[i][j].childNodes[0].classList.contains("blackCircle")) {
-
 					blackCounter++;
 				} else if (cells[i][j].childNodes[0].classList.contains("whiteCircle")) {
 					whiteCounter++;
@@ -391,7 +391,6 @@ function updateStatistics(){
 }
 function createNewGame(){
 	var cellChild;
-	statistics.howManyTurns = 0;
 	for (var i = 0; i < TABLE_SIZE ; i++) {
 		for(var j = 0; j < TABLE_SIZE; j++){
 			cells[i][j].classList.remove("validCell");
@@ -404,8 +403,21 @@ function createNewGame(){
 		}
 	}
 	setValidCells();
+	initStatistics();
 
 	gameStarted = true;
+}
+
+function initStatistics(){
+	statistics.howManyTurns = -1;
+	statistics.startTime = d.getTime();
+	statistics.timePassed = 0;
+	statistics.avgTimeForPlayerMove = 0;
+	statistics.numberOfTimesBlackReachedTwoCircles = -1;
+	statistics.numberOfTimesWhiteReachedTwoCircles = -1;
+	statistics.whiteScore = 0;
+	statistics.blackScore = 0;
+	updateStatistics();
 }
 
 function surrender(){
