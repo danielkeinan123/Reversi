@@ -4,7 +4,7 @@ let gameTable = document.querySelector(".gameTable");
 let newGame = document.querySelector("#new");
 let forfit = document.querySelector("#forfit");
 
-let gameStarted = false;
+let gameStarted = true;
 
 const TABLE_SIZE = 10;
 let blackTurn = true;
@@ -269,7 +269,7 @@ function findCellsToChangeInVertical(comper, j,to , nextMove ,i,newColor,oldColo
 }
 
 function clickCell(cell){
-	if(cell.classList.contains("validCell")){
+	if(cell.classList.contains("validCell") && gameStarted){
 
 		var newDiv = document.createElement("DIV");
 		newDiv.classList.add("circle");
@@ -368,6 +368,8 @@ function endGame(winner) {
 		window.alert("GAME HAS ENDED, Congratulations Black");
 	else
 		window.alert("GAME HAS ENDED, Congratulations White");
+
+	gameStarted = false;
 }
 
 function updatePlayersTwoTimes(){
