@@ -13,7 +13,7 @@ let d = new Date();
 
 let statistics ={
 	howManyTurns : 0,
-	startTime    : d.getTime(),
+	startTime    : 0,
 	timePassed   : 0,
 	avgTimeForPlayerMove : 0,
 	numberOfTimesBlackReachedTwoCircles : 0,
@@ -362,7 +362,8 @@ function isThereAWinner() {
 
 }
 function endGame(winner) {
-	statistics.timePassed = d.getTime() - statistics.startTime;
+	currTime = new Date().getTime();
+	statistics.timePassed = currTime - statistics.startTime;
 	statistics.avgTimeForPlayerMove = statistics.timePassed/statistics.howManyTurns;
 	if(winner === whoWon.Black)
 		window.alert("GAME HAS ENDED, Congratulations Black");
@@ -386,7 +387,12 @@ function updateStatistics(){
 	statistics.howManyTurns ++;
 	updatePlayersTwoTimes();
 	document.getElementById("numOfTurns").innerHTML = statistics.howManyTurns;
+	currTime = new Date().getTime();
+	statistics.timePassed = currTime - statistics.startTime;
 	document.getElementById("timePassed").innerHTML = statistics.timePassed;
+	if(statistics.howManyTurns != 0){
+		statistics.avgTimeForPlayerMove = statistics.timePassed/statistics.howManyTurns;
+	}
 	document.getElementById("avgTimeForPlayer").innerHTML = statistics.avgTimeForPlayerMove;
 	document.getElementById("numOfBlackWithTwoCircles").innerHTML = statistics.numberOfTimesBlackReachedTwoCircles;
 	document.getElementById("numOfWhiteWithTwoCircles").innerHTML = statistics.numberOfTimesWhiteReachedTwoCircles;
@@ -412,7 +418,8 @@ function createNewGame(){
 
 function initStatistics(){
 	statistics.howManyTurns = -1;
-	statistics.startTime = d.getTime();
+	statistics.startTime = new Date().getTime();
+	console.log(statistics.startTime);
 	statistics.timePassed = 0;
 	statistics.avgTimeForPlayerMove = 0;
 	statistics.numberOfTimesBlackReachedTwoCircles = -1;
