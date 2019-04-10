@@ -9,7 +9,6 @@ let gameStarted = true;
 const TABLE_SIZE = 10;
 let blackTurn = true;
 let cells = [];
-let d = new Date();
 
 let statistics ={
 	howManyTurns : 0,
@@ -19,7 +18,10 @@ let statistics ={
 	numberOfTimesBlackReachedTwoCircles : 0,
 	numberOfTimesWhiteReachedTwoCircles : 0,
 	whiteScore : 2,
-	blackScore : 2
+	blackScore : 2,
+	allGameTurnCount : 0,
+	allGamesAvgTimeForPlayerMove : 0,
+	oldGamesTimePassed : 0
 };
 
 const whoWon = {
@@ -67,7 +69,7 @@ for (var i = 0; i < TABLE_SIZE; i++) {
 		}
 }
 setValidCells();
-initStatistics();
+initStatistics(true);
 
 function initCellDiv(cell,i,j){
 	var circleDiv = document.createElement("DIV");
@@ -234,7 +236,7 @@ function findCellsToChangeInColum(comper, j,to , add ,colIndex,newColor,oldColor
 function findCellsToChangeInVertical(comper, j,to , nextMove ,i,newColor,oldColor){
 	var foundMatch = false;
 	var setToColor = false;
-	//console.log("befor while "+j+" "+to);
+	//console.log("before while "+j+" "+to);
 	while(comper(j,to)){
 		//console.log("in while i="+i+" j="+j+" to="+to);
 		if(cells[i][j].hasChildNodes()){
@@ -362,7 +364,7 @@ function isThereAWinner() {
 
 }
 function endGame(winner) {
-	currTime = new Date().getTime();
+	let currTime = new Date().getTime();
 	statistics.timePassed = currTime - statistics.startTime;
 	statistics.avgTimeForPlayerMove = statistics.timePassed/statistics.howManyTurns;
 	if(winner === whoWon.Black)
@@ -385,19 +387,22 @@ function updatePlayersTwoTimes(){
 function updateStatistics(){
 	updateScoresCount();
 	statistics.howManyTurns ++;
+	statistics.allGameTurnCount++;
 	updatePlayersTwoTimes();
 	document.getElementById("numOfTurns").innerHTML = statistics.howManyTurns;
-	currTime = new Date().getTime();
+	let currTime = new Date().getTime();
 	statistics.timePassed = currTime - statistics.startTime;
 	document.getElementById("timePassed").innerHTML = statistics.timePassed;
-	if(statistics.howManyTurns != 0){
+	if(statistics.howManyTurns !== 0){
 		statistics.avgTimeForPlayerMove = statistics.timePassed/statistics.howManyTurns;
+		statistics.allGamesAvgTimeForPlayerMove =(statistics.oldGamesTimePassed +statistics.timePassed)/statistics.allGameTurnCount;
 	}
 	document.getElementById("avgTimeForPlayer").innerHTML = statistics.avgTimeForPlayerMove;
 	document.getElementById("numOfBlackWithTwoCircles").innerHTML = statistics.numberOfTimesBlackReachedTwoCircles;
 	document.getElementById("numOfWhiteWithTwoCircles").innerHTML = statistics.numberOfTimesWhiteReachedTwoCircles;
+	document.getElementById("allGamesAvgTimeForPlayerMove").innerHTML = statistics.allGamesAvgTimeForPlayerMove;
 }
-function createNewGame(){
+function createNewGame(firstGame){
 	var cellChild;
 	for (var i = 0; i < TABLE_SIZE ; i++) {
 		for(var j = 0; j < TABLE_SIZE; j++){
@@ -411,12 +416,23 @@ function createNewGame(){
 		}
 	}
 	setValidCells();
-	initStatistics();
+	initStatistics(firstGame);
 
 	gameStarted = true;
 }
 
-function initStatistics(){
+function initStatistics(firstGame){
+	if (firstGame){
+		statistics.allGameTurnCount = -1;
+		statistics.AllGamesAvgTimeForPlayerMove = 0;
+		statistics.allGamesTimePasse =0;
+		statistics.oldGamesTimePassed =0;
+	}
+	else {
+		let currTime = new Date().getTime();
+		statistics.timePassed = currTime - statistics.startTime;
+		statistics.oldGamesTimePassed = statistics.oldGamesTimePassed +statistics.timePassed;
+	}
 	statistics.howManyTurns = -1;
 	statistics.startTime = new Date().getTime();
 	console.log(statistics.startTime);
@@ -426,6 +442,9 @@ function initStatistics(){
 	statistics.numberOfTimesWhiteReachedTwoCircles = -1;
 	statistics.whiteScore = 0;
 	statistics.blackScore = 0;
+
+
+
 	updateStatistics();
 }
 
@@ -441,7 +460,7 @@ function surrender(){
 }
 
 newGame.addEventListener("click",function(){
-	createNewGame();
+	createNewGame(false);
 });
 
 forfit.addEventListener("click",function () {
