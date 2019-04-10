@@ -166,8 +166,8 @@ function setCellsToNewColor(cell, newColor, oldColor){
 	}
 	findCellsToChangeInRow(bigger,TABLE_SIZE-1, colIndex ,false,rowIndex,newColor,oldColor);
 	findCellsToChangeInRow(smaller,0, colIndex , true,rowIndex,newColor,oldColor);	
-	findCellsToChangeInColum(bigger, TABLE_SIZE-1, rowIndex, false, colIndex, newColor, oldColor);
-	findCellsToChangeInColum(smaller, 0, rowIndex, true, colIndex,newColor, oldColor);
+	findCellsToChangeInColumn(bigger, TABLE_SIZE-1, rowIndex, false, colIndex, newColor, oldColor);
+	findCellsToChangeInColumn(smaller, 0, rowIndex, true, colIndex,newColor, oldColor);
 	//down vertical
 	i = max(0,rowIndex-colIndex);
 	j = max(0,colIndex-rowIndex);
@@ -210,7 +210,7 @@ function findCellsToChangeInRow(comper, i,to , add ,rowIndex,newColor,oldColor){
 	}
 }
 
-function findCellsToChangeInColum(comper, j,to , add ,colIndex,newColor,oldColor){
+function findCellsToChangeInColumn(comper, j, to , add , colIndex, newColor, oldColor){
 	var foundMatch = false;
 	var setToColor = false;
 	while(comper(j,to)){
